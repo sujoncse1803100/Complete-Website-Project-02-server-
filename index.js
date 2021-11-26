@@ -63,7 +63,6 @@ try {
       serviceCollection.insertOne(service).then((result) => {
         if (result) {
           res.send(result.acknowledged);
-          console.log("Service Inserted");
         }
       });
     });
@@ -76,7 +75,6 @@ try {
 
     app.post("/makeAdmin", (req, res) => {
       const email = req.body.email;
-      console.log(email);
 
       adminCollection.insertOne({ email: email }).then((result) => {
         res.send(result.acknowledged);
@@ -112,12 +110,9 @@ try {
         image: encodedImage,
       };
 
-      // console.log(status);
-
       orderCollection.insertOne(order).then((result) => {
         if (result) {
           res.send(result.acknowledged);
-          console.log("Order Placed");
         }
       });
     });
@@ -150,6 +145,34 @@ try {
       }
     });
 
+    app.post('/particularUserOrderList',(req,res)=>{
+      orderCollection.find({email: req.body.email})
+        .toArray((err,documents)=>{
+            res.send(documents)
+        });
+
+    });
+
+
+    app.post('/addReview',(req,res)=>{
+      const reviewData = {
+        name : req.body.name,
+        orderName : req.body.orderName,
+        photoURL : req.body.photoURL,
+        description : req.body.description,
+      };
+
+      reviewCollection.insertOne(reviewData)
+      .then(result =>{
+        res.send(result.acknowledged);
+      })
+    });
+
+    app.get("/review", (req, res) => {
+      reviewCollection.find({}).toArray((err, documents) => {
+        res.send(documents);
+      });
+    });
 
 
 
